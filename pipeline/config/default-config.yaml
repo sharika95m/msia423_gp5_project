@@ -1,0 +1,131 @@
+run_config:
+  name: random-forest-featset-1
+  author: Sharika Mahadevan
+  version: default
+  description: Classifies customer churn and also predicts probability of a customer churning
+  dependencies: requirements.txt
+  data_source: https://www.kaggle.com/datasets/datazng/telecom-company-churn-rate-call-center-data
+  output: runs
+create_dataset: ['customerID', 'gender', 'SeniorCitizen', 'Partner', 'Dependents',
+       'tenure', 'PhoneService', 'MultipleLines', 'InternetService',
+       'OnlineSecurity', 'OnlineBackup', 'DeviceProtection', 'TechSupport',
+       'StreamingTV', 'StreamingMovies', 'Contract', 'PaperlessBilling',
+       'PaymentMethod', 'MonthlyCharges', 'TotalCharges', 'numAdminTickets',
+       'numTechTickets', 'Churn']
+generate_features:
+  remove_na:
+    column_name: TotalCharges
+  get_ohe:
+    column_names: ['gender', 'Partner', 'Dependents', 'PhoneService',
+                  'MultipleLines', 'InternetService', 'OnlineSecurity',
+                  'OnlineBackup', 'DeviceProtection', 'TechSupport',
+                  'StreamingTV', 'StreamingMovies', 'Contract',
+                  'PaperlessBilling', 'PaymentMethod', 'Churn']
+    axis: 1
+  drop_cols:
+    column_name: customerID
+    axis: 1
+  calculate_log_transform:
+    log_transform:
+      log_entropy: visible_entropy
+  calculate_entropy:
+    entropy_x_contrast:
+      col_a: visible_contrast
+      col_b: visible_entropy
+train_test_data:
+  split_data:
+    test_size: 0.3
+    random_state: 250
+  upsample_train:
+    random_state: 20
+    axis: 0
+    ignore_index: True
+    sort: False
+crossvalidation:
+  define_folds:
+    n_splits: 10
+    shuffle: True
+    random_state: 421
+  get_features:
+    features_to_use: ['SeniorCitizen', 'tenure', 'MonthlyCharges', 'TotalCharges',
+       'numAdminTickets', 'numTechTickets', 'gender_Male', 'Partner_Yes',
+       'Dependents_Yes', 'PhoneService_Yes', 'MultipleLines_No phone service',
+       'MultipleLines_Yes', 'InternetService_Fiber optic',
+       'InternetService_No', 'OnlineSecurity_No internet service',
+       'OnlineSecurity_Yes', 'OnlineBackup_No internet service',
+       'OnlineBackup_Yes', 'DeviceProtection_No internet service',
+       'DeviceProtection_Yes', 'TechSupport_No internet service',
+       'TechSupport_Yes', 'StreamingTV_No internet service', 'StreamingTV_Yes',
+       'StreamingMovies_No internet service', 'StreamingMovies_Yes',
+       'Contract_One year', 'Contract_Two year', 'PaperlessBilling_Yes',
+       'PaymentMethod_Credit card (automatic)',
+       'PaymentMethod_Electronic check', 'PaymentMethod_Mailed check']
+  get_target:
+    target_feature: 'Churn_Yes'
+    axis: 1
+  models: ['DecisionTreeClassifier',
+      'RandomForestClassifier']
+  model_hyperparameters:
+    DecisionTree:
+      hyperparameters: {'min_samples_leaf':[3,5,10,20]}
+    RandomForest:
+      hyperparameters: {'max_features':[3,4,5],
+              'min_samples_leaf':[2,3,4],
+              'bootstrap':[True],
+              'max_depth':[8,10,12,14,15]}
+    scorer:
+      scoring_metrics: {'f1_score': make_scorer(f1_score)}
+    gridsearch_parameters:
+      n_jobs: -1
+  train_save:
+    train_x:
+      features_to_use: ['SeniorCitizen', 'tenure', 'MonthlyCharges', 'TotalCharges',
+       'numAdminTickets', 'numTechTickets', 'gender_Male', 'Partner_Yes',
+       'Dependents_Yes', 'PhoneService_Yes', 'MultipleLines_No phone service',
+       'MultipleLines_Yes', 'InternetService_Fiber optic',
+       'InternetService_No', 'OnlineSecurity_No internet service',
+       'OnlineSecurity_Yes', 'OnlineBackup_No internet service',
+       'OnlineBackup_Yes', 'DeviceProtection_No internet service',
+       'DeviceProtection_Yes', 'TechSupport_No internet service',
+       'TechSupport_Yes', 'StreamingTV_No internet service', 'StreamingTV_Yes',
+       'StreamingMovies_No internet service', 'StreamingMovies_Yes',
+       'Contract_One year', 'Contract_Two year', 'PaperlessBilling_Yes',
+       'PaymentMethod_Credit card (automatic)',
+       'PaymentMethod_Electronic check', 'PaymentMethod_Mailed check']
+    train_y: 
+      features_to_use: 'Churn_Yes'
+model_predict:
+  choose_features:
+    features_to_use: ['SeniorCitizen', 'tenure', 'MonthlyCharges', 'TotalCharges',
+       'numAdminTickets', 'numTechTickets', 'gender_Male', 'Partner_Yes',
+       'Dependents_Yes', 'PhoneService_Yes', 'MultipleLines_No phone service',
+       'MultipleLines_Yes', 'InternetService_Fiber optic',
+       'InternetService_No', 'OnlineSecurity_No internet service',
+       'OnlineSecurity_Yes', 'OnlineBackup_No internet service',
+       'OnlineBackup_Yes', 'DeviceProtection_No internet service',
+       'DeviceProtection_Yes', 'TechSupport_No internet service',
+       'TechSupport_Yes', 'StreamingTV_No internet service', 'StreamingTV_Yes',
+       'StreamingMovies_No internet service', 'StreamingMovies_Yes',
+       'Contract_One year', 'Contract_Two year', 'PaperlessBilling_Yes',
+       'PaymentMethod_Credit card (automatic)',
+       'PaymentMethod_Electronic check', 'PaymentMethod_Mailed check']
+  get_target:
+    target_feature: 'Churn_Yes'
+  score_type: 
+    probability: pred_probability
+    label: pred_label
+    truth: true_label
+evaluate_performance:
+  score_type: 
+    probability: pred_probability
+    label: pred_label
+    truth: true_label
+  metric_type:
+    auc: auc
+    confusion: confusion_matrix
+    accuracy: accuracy
+    classification_report: classification_report
+aws:
+  upload: True
+  bucket_name: msia423-gp5-project
+  region_name: us-east-2

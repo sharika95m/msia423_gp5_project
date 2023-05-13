@@ -1,0 +1,15 @@
+2023-05-08 21:43:29 - clouds - INFO - Configuration file loaded from config/default-config.yaml
+2023-05-08 21:43:30 - src.acquire_data - INFO - URL has been successfully accessed
+2023-05-08 21:43:30 - src.acquire_data - INFO - Data written to runs/1683600209/clouds.data
+2023-05-08 21:43:30 - src.create_dataset - INFO - Dataset has been successfully created.
+2023-05-08 21:43:30 - src.create_dataset - INFO - Dataset written to runs/1683600209/clouds.csv
+2023-05-08 21:43:30 - src.generate_features - INFO - All features have been created successfully.
+2023-05-08 21:43:31 - src.analysis - INFO - All Plots are saved in directory: runs/1683600209/figures
+2023-05-08 21:43:31 - src.train_model - INFO - Model and train-test datasets have been created.
+2023-05-08 21:43:31 - src.train_model - INFO - Datasets written to runs/1683600209
+2023-05-08 21:43:31 - src.train_model - INFO - Model written to runs/1683600209/trained_model_object.pkl
+2023-05-08 21:43:31 - src.score_model - INFO - Predictions and respective probabilities                     have been calculated.
+2023-05-08 21:43:31 - src.score_model - INFO - Datasets written to runs/1683600209/scores.csv
+2023-05-08 21:43:31 - src.evaluate_performance - INFO - Metrics have successfully been calculated.
+2023-05-08 21:43:31 - src.evaluate_performance - INFO - Dictionary written to runs/1683600209/metrics.yaml
+2023-05-08 21:43:35 - src.aws_utils - INFO - Artifacts have successfully been                         uploaded to S3 bucket.
