@@ -11,3 +11,4 @@ models/*
 *.pylintrc
 *.cache
 kaggle.json
+doubts.docx
