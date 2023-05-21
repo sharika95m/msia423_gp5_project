@@ -125,6 +125,9 @@ evaluate_performance:
     confusion: confusion_matrix
     accuracy: accuracy
     classification_report: classification_report
+  threshold:
+    auc: 0.9
+    accuracy: 0.9
 aws:
   upload: True
   bucket_name: msia423-gp5-project

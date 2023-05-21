@@ -9,6 +9,21 @@ import yaml
 warnings.filterwarnings("ignore")
 logger = logging.getLogger(__name__)
 
+def log_performance(metric: float, comparison: float, metric_name: str) -> None:
+    """Summary: Created log messages based on metric value and  provided thresholds
+    
+    Args:
+    metric: Current metric value
+    comparison: Threshold value
+    metric_name: Name of metric
+    """
+    if not comparison:
+        logger.info('%s = %0.2f. Default threshold not provided ',metric_name,metric)
+    elif metric < comparison:
+        logger.warning('%s = %0.2f. Metric value less than provided threshold of %0.2f',metric_name,metric,comparison)
+    else:
+        logger.info('%s = %0.2f. Metric value greater than provided threshold of %0.2f',metric_name,metric,comparison)
+
 def calculate_auc(scores: pd.DataFrame, kwargs: dict) -> float:
     """
     Summary: Calculates AUC
@@ -67,15 +82,15 @@ def evaluate_performance(scores: pd.DataFrame, kwargs: dict)\
     """
 
     metrics = {}
-    print('Here')
+    #print('Here')
     try:
         # 1. Finding AUC
-        metrics[kwargs["metric_type"]["auc"]] = \
-                        calculate_auc(scores, kwargs["score_type"])
+        curr_auc =  calculate_auc(scores, kwargs["score_type"])
+        metrics[kwargs["metric_type"]["auc"]] = curr_auc
 
         # 2. Finding accuracy
-        metrics[kwargs["metric_type"]["accuracy"]] = \
-                        calculate_accuracy(scores,kwargs["score_type"])
+        curr_accuracy = calculate_accuracy(scores,kwargs["score_type"])
+        metrics[kwargs["metric_type"]["accuracy"]] = curr_accuracy
 
         # 3. Finding confusion matrix
         metrics[kwargs["metric_type"]["confusion"]] = \
@@ -84,22 +99,31 @@ def evaluate_performance(scores: pd.DataFrame, kwargs: dict)\
         # 4. Finding classification report
         metrics[kwargs["metric_type"]["classification_report"]] = \
                         calculate_classification(scores, kwargs["score_type"])
+        
+        # 5. Testing the thresholds
+        threshold_metrics = kwargs.get('threshold',None)
+
+        if not threshold_metrics:
+            logger.warning('Threshold values not provided for testing')
+        else:
+            log_performance(curr_auc,threshold_metrics.get('auc',None),'ROC_AUC_Score')
+            log_performance(curr_accuracy,threshold_metrics.get('accuracy',None),'Accuracy')
 
         logger.info("Metrics have successfully been calculated.")
     except KeyError as k_e:
-        logger.error("Metrics is not be computed due to KeyError \
+        logger.error("Metrics are not computed due to KeyError \
                     exception: %s", k_e)
         raise KeyError from k_e
     except ValueError as v_e:
-        logger.error("Metrics is not be computed due to ValueError \
+        logger.error("Metrics are not computed due to ValueError \
                     exception: %s", v_e)
         raise ValueError from v_e
     except IndexError as i_e:
-        logger.error("Metrics is not be computed due to IndexError \
+        logger.error("Metrics are not computed due to IndexError \
                     exception: %s", i_e)
         raise IndexError from i_e
     except Exception as other:
-        logger.error("Metrics is not be computed due to an exception: \
+        logger.error("Metrics are not computed due to an exception: \
                     %s", other)
         raise Exception from other
 
@@ -115,7 +139,7 @@ def save_metrics(metrics: dict, save_path: Path) -> None:
     try:
         with open(save_path,"w") as file:
             yaml.dump(metrics,file)
-        logger.info("Dictionary written to %s", save_path)
+        logger.info("Metrics written to %s", save_path)
     except TypeError as t_e:
         logger.error("Metrics could not be written due to \
                     TypeError: %s", t_e)
@@ -130,7 +154,7 @@ def save_metrics(metrics: dict, save_path: Path) -> None:
         raise PermissionError from p_e
     except yaml.YAMLError as y_e:
         logger.error("Metrics could not be written due to \
-                    yaml.YAMLError: %s", y_e)
+                      YAMLError: %s", y_e)
         raise yaml.YAMLError from y_e
     except Exception as other:
         logger.error("Metrics could not be written due to \
