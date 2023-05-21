@@ -47,7 +47,7 @@ def calculate_confusion(scores: pd.DataFrame, kwargs: dict) -> str:
 
 def calculate_classification(scores: pd.DataFrame, kwargs: dict) -> str:
     """
-    Summary: Calculates Classification report
+    Summary: Creates Classification report
     Args:
         scores: dataframe with model predictions and corresponding
         test data labels
