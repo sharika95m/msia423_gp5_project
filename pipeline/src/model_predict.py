@@ -27,11 +27,11 @@ def model_predict(test_data: pd.DataFrame, model: Union[RandomForestClassifier, 
         test_x = test_data[kwargs["choose_features"]["features_to_use"]]
         test_y = test_data[kwargs["get_target"]["target_feature"]]
 
-        #Predicting probability of cloud class being 0 or 1
+        #Predicting probability of churn
         predict_probability = model.predict_proba(test_x)[:,1]
         test_data[kwargs["score_type"]["probability"]] = predict_probability
 
-        #Predicting label of cloud class
+        #Predicting 0 (no churn) or 1 (churn)
         predictions = model.predict(test_x)
         test_data[kwargs["score_type"]["label"]] = predictions
 
@@ -44,18 +44,20 @@ def model_predict(test_data: pd.DataFrame, model: Union[RandomForestClassifier, 
                     have been calculated.")
     except IndexError as i_err:
         print(i_err)
-        logger.error("While finding the predictions, \
-                    Index error has occured: %s", i_err)
+        logger.error("Index error occurred while finding predictions: %s", i_err)
         sys.exit(1)
     except ValueError as v_err:
         print(v_err)
-        logger.error("While finding the predictions, \
-                    Value error has occured: %s", v_err)
+        logger.error("Value error occurred while finding predictions: %s", v_err)
+        sys.exit(1)
+    except TypeError as t_err:
+        print(t_err)
+        logger.error('Type error occured while finding predictions,\
+                      possible type mismatch between data type: %s', t_err)
         sys.exit(1)
     except Exception as other:
         print(other)
-        logger.error("While finding the predictions, \
-                    Other error has occured: %s", other)
+        logger.error("Error occured While finding the predictions: %s", other)
         sys.exit(1)
 
     return test_data, prediction_df
@@ -72,12 +74,11 @@ def save_predictions(data: pd.DataFrame, predictions: pd.DataFrame, save_path: P
         predictions.to_csv(save_path / "predictions.csv", index=False)
         logger.info("Datasets written to %s", save_path)
     except FileNotFoundError as fnfe:
-        logger.error("While saving scores, FileNotFoundError \
-                    has occured: %s", fnfe)
+        logger.error("FileNotFoundError occured While saving scores: %s", fnfe)
         sys.exit(1)
     except IOError as io_err:
-        logger.error("While saving scores, IO Error \
-                    has occured: %s", io_err)
+        logger.error("IO Error occured While saving scores,\
+                     possible incorrect file path: %s", io_err)
         sys.exit(1)
     except Exception as other:
         logger.error("Error occurred while trying to \
