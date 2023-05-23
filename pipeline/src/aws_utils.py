@@ -9,6 +9,60 @@ import botocore
 warnings.filterwarnings("ignore")
 logger = logging.getLogger(__name__)
 
+def get_s3_file_path(config: dict) -> Path:
+    """
+    Summary: Returns a Pathlib Path object to the file in the specified S3 bucket and folder.
+    
+    Args:
+        config: A dictionary with three keys:
+                 - "bucket_name": Name of the AWS S3 bucket.
+                 - "dataset_folder_name": Name of the folder within the S3 bucket.
+                 - "dataset_file_name": Name of the xlsx file within the folder.
+        
+    Returns:
+        A Pathlib Path object to the file in the S3 bucket.
+    """
+    try:
+        s3 = boto3.resource('s3')
+        s3.meta.client.head_bucket(Bucket=config["bucket_name"])
+
+        # Check if the bucket exists
+        bucket = s3.Bucket(config["bucket_name"])
+        if not bucket.creation_date:
+            logger.error(f"Bucket {config['bucket_name']} does not exist")
+            raise ValueError(f"Bucket {config['bucket_name']} does not exist")
+
+        # Check if the folder exists
+        folder_obj = list(bucket.objects.filter(Prefix=f"{config['dataset_folder_name']}/"))
+        if not folder_obj:
+            logger.error(f"Folder {config['dataset_folder_name']} does not exist in bucket {config['bucket_name']}")
+            raise ValueError(f"Folder {config['dataset_folder_name']} does not exist in bucket {config['bucket_name']}")
+
+        # Check if the file exists
+        file_obj = s3.Object(config["bucket_name"], f"{config['dataset_folder_name']}/{config['dataset_file_name']}")
+        try:
+            file_obj.load()
+        except botocore.exceptions.ClientError as e:
+            if e.response['Error']['Code'] == "404":
+                logger.error(f"File {config['dataset_file_name']} does not exist in bucket {config['bucket_name']}/{config['dataset_folder_name']}")
+                raise ValueError(f"File {config['dataset_file_name']} does not exist in bucket {config['bucket_name']}/{config['dataset_folder_name']}")
+            else:
+                raise
+
+        path_to_file = Path(f"s3://{config['bucket_name']}/{config['dataset_folder_name']}/{config['dataset_file_name']}")
+        logger.info(f"Successfully created Path object to file {config['dataset_file_name']} in bucket {config['bucket_name']}")
+        return path_to_file
+
+    except botocore.exceptions.BotoCoreError as err:
+        logger.error(f"Error occurred while creating path to file {config['dataset_file_name']}: {err}")
+        raise err from None
+    except botocore.exceptions.NoCredentialsError as err:
+        logger.error(f"No AWS credentials found: {err}")
+        raise err from None
+    except Exception as err:
+        logger.error(f"Unexpected error occurred: {err}")
+        raise err from None
+
 def upload_artifacts(artifacts: Path, config: dict) -> list[str]:
     """
     Summary: Upload all the artifacts in the specified directory to S3

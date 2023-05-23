@@ -50,7 +50,12 @@ if __name__ == "__main__":
     # Acquire data from online repository and save to disk
     # ad.acquire_data(run_config["data_source"], artifacts / "clouds.data")
 
-    # Create structured dataset from raw data; save to disk
+    #Create dataset from raw data found within s3
+    dataset_path2 = aws.get_s3_file_path(config["aws"])
+    print(dataset_path2)
+    #df = cd.get_dataset(dataset_path)
+
+    # Create structured dataset from raw data; save to disk    
     dataset_path = Path("data/Telecom Churn Rate Dataset.xlsx")
     df = cd.get_dataset(dataset_path)
 

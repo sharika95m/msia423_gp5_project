@@ -1,0 +1,247 @@
+aws:
+  bucket_name: msia423-gp5-project
+  dataset_file_name: Telecom Churn Rate Dataset.xlsx
+  dataset_folder_name: telecom_kaggle_dataset
+  region_name: us-east-2
+  upload: false
+create_dataset:
+- customerID
+- gender
+- SeniorCitizen
+- Partner
+- Dependents
+- tenure
+- PhoneService
+- MultipleLines
+- InternetService
+- OnlineSecurity
+- OnlineBackup
+- DeviceProtection
+- TechSupport
+- StreamingTV
+- StreamingMovies
+- Contract
+- PaperlessBilling
+- PaymentMethod
+- MonthlyCharges
+- TotalCharges
+- numAdminTickets
+- numTechTickets
+- Churn
+crossvalidation:
+  define_folds:
+    n_splits: 10
+    random_state: 421
+    shuffle: true
+  get_features:
+    features_to_use:
+    - SeniorCitizen
+    - tenure
+    - MonthlyCharges
+    - TotalCharges
+    - numAdminTickets
+    - numTechTickets
+    - gender_Male
+    - Partner_Yes
+    - Dependents_Yes
+    - PhoneService_Yes
+    - MultipleLines_No phone service
+    - MultipleLines_Yes
+    - InternetService_Fiber optic
+    - InternetService_No
+    - OnlineSecurity_No internet service
+    - OnlineSecurity_Yes
+    - OnlineBackup_No internet service
+    - OnlineBackup_Yes
+    - DeviceProtection_No internet service
+    - DeviceProtection_Yes
+    - TechSupport_No internet service
+    - TechSupport_Yes
+    - StreamingTV_No internet service
+    - StreamingTV_Yes
+    - StreamingMovies_No internet service
+    - StreamingMovies_Yes
+    - Contract_One year
+    - Contract_Two year
+    - PaperlessBilling_Yes
+    - PaymentMethod_Credit card (automatic)
+    - PaymentMethod_Electronic check
+    - PaymentMethod_Mailed check
+  get_target:
+    axis: 1
+    target_feature: Churn_Yes
+  model_hyperparameters:
+    DecisionTree:
+      hyperparameters:
+        min_samples_leaf:
+        - 3
+        - 5
+        - 10
+        - 20
+    RandomForest:
+      hyperparameters:
+        bootstrap:
+        - true
+        max_depth:
+        - 8
+        - 10
+        - 12
+        - 14
+        - 15
+        max_features:
+        - 3
+        - 4
+        - 5
+        min_samples_leaf:
+        - 2
+        - 3
+        - 4
+    gridsearch_parameters:
+      n_jobs: -1
+    scorer:
+      scoring_metrics:
+        f1_score: make_scorer(f1_score)
+  models:
+  - DecisionTreeClassifier
+  - RandomForestClassifier
+  train_save:
+    train_x:
+      features_to_use:
+      - SeniorCitizen
+      - tenure
+      - MonthlyCharges
+      - TotalCharges
+      - numAdminTickets
+      - numTechTickets
+      - gender_Male
+      - Partner_Yes
+      - Dependents_Yes
+      - PhoneService_Yes
+      - MultipleLines_No phone service
+      - MultipleLines_Yes
+      - InternetService_Fiber optic
+      - InternetService_No
+      - OnlineSecurity_No internet service
+      - OnlineSecurity_Yes
+      - OnlineBackup_No internet service
+      - OnlineBackup_Yes
+      - DeviceProtection_No internet service
+      - DeviceProtection_Yes
+      - TechSupport_No internet service
+      - TechSupport_Yes
+      - StreamingTV_No internet service
+      - StreamingTV_Yes
+      - StreamingMovies_No internet service
+      - StreamingMovies_Yes
+      - Contract_One year
+      - Contract_Two year
+      - PaperlessBilling_Yes
+      - PaymentMethod_Credit card (automatic)
+      - PaymentMethod_Electronic check
+      - PaymentMethod_Mailed check
+    train_y:
+      features_to_use: Churn_Yes
+evaluate_performance:
+  metric_type:
+    accuracy: accuracy
+    auc: auc
+    classification_report: classification_report
+    confusion: confusion_matrix
+  score_type:
+    label: pred_label
+    probability: pred_probability
+    truth: true_label
+  threshold:
+    accuracy: 0.9
+    auc: 0.9
+generate_features:
+  calculate_entropy:
+    entropy_x_contrast:
+      col_a: visible_contrast
+      col_b: visible_entropy
+  calculate_log_transform:
+    log_transform:
+      log_entropy: visible_entropy
+  drop_cols:
+    axis: 1
+    column_name: customerID
+  get_ohe:
+    axis: 1
+    column_names:
+    - gender
+    - Partner
+    - Dependents
+    - PhoneService
+    - MultipleLines
+    - InternetService
+    - OnlineSecurity
+    - OnlineBackup
+    - DeviceProtection
+    - TechSupport
+    - StreamingTV
+    - StreamingMovies
+    - Contract
+    - PaperlessBilling
+    - PaymentMethod
+    - Churn
+  remove_na:
+    column_name: TotalCharges
+model_predict:
+  choose_features:
+    features_to_use:
+    - SeniorCitizen
+    - tenure
+    - MonthlyCharges
+    - TotalCharges
+    - numAdminTickets
+    - numTechTickets
+    - gender_Male
+    - Partner_Yes
+    - Dependents_Yes
+    - PhoneService_Yes
+    - MultipleLines_No phone service
+    - MultipleLines_Yes
+    - InternetService_Fiber optic
+    - InternetService_No
+    - OnlineSecurity_No internet service
+    - OnlineSecurity_Yes
+    - OnlineBackup_No internet service
+    - OnlineBackup_Yes
+    - DeviceProtection_No internet service
+    - DeviceProtection_Yes
+    - TechSupport_No internet service
+    - TechSupport_Yes
+    - StreamingTV_No internet service
+    - StreamingTV_Yes
+    - StreamingMovies_No internet service
+    - StreamingMovies_Yes
+    - Contract_One year
+    - Contract_Two year
+    - PaperlessBilling_Yes
+    - PaymentMethod_Credit card (automatic)
+    - PaymentMethod_Electronic check
+    - PaymentMethod_Mailed check
+  get_target:
+    target_feature: Churn_Yes
+  score_type:
+    label: pred_label
+    probability: pred_probability
+    truth: true_label
+run_config:
+  author: Sharika Mahadevan
+  data_source: https://www.kaggle.com/datasets/datazng/telecom-company-churn-rate-call-center-data
+  dependencies: requirements.txt
+  description: Classifies customer churn and also predicts probability of a customer
+    churning
+  name: random-forest-featset-1
+  output: runs
+  version: default
+train_test_data:
+  split_data:
+    random_state: 250
+    test_size: 0.3
+  upsample_train:
+    axis: 0
+    ignore_index: true
+    random_state: 20
+    sort: false
