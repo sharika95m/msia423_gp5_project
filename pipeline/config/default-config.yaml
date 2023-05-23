@@ -129,6 +129,8 @@ evaluate_performance:
     auc: 0.9
     accuracy: 0.9
 aws:
-  upload: True
+  upload: False
   bucket_name: msia423-gp5-project
   region_name: us-east-2
+  dataset_folder_name: telecom_kaggle_dataset
+  dataset_file_name: Telecom Churn Rate Dataset.xlsx
