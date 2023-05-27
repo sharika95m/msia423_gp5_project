@@ -51,6 +51,7 @@ if __name__ == "__main__":
     with (artifacts / "config.yaml").open("w") as f:
         yaml.dump(config, f)
 
+
     # Create dataset from raw data found within s3
     # Create structured dataset from raw data; save to disk 
     dataset_path = aws.get_s3_file_path(config["aws"])

@@ -9,8 +9,10 @@ import pandas as pd
 import numpy as np
 from sklearn.preprocessing import OneHotEncoder
 
+
 warnings.filterwarnings("ignore")
 logger = logging.getLogger(__name__)
+
 
 def remove_na(data: pd.DataFrame, kwargs: Dict[str, str]) -> pd.DataFrame:
     """
@@ -47,6 +49,7 @@ def remove_na(data: pd.DataFrame, kwargs: Dict[str, str]) -> pd.DataFrame:
 
     return data_2
 
+
 def get_ohe(data: pd.DataFrame, kwargs: Dict[str, str]) -> Union[pd.DataFrame, OneHotEncoder]:
     """
     Summary: Function to One Hot Encode all features
@@ -79,6 +82,7 @@ def get_ohe(data: pd.DataFrame, kwargs: Dict[str, str]) -> Union[pd.DataFrame, O
                     Other error occurred: %s", other)
         raise Exception from other
     return data, ohe
+
 
 def drop_cols(data: pd.DataFrame, kwargs: Dict[str, str])\
                             -> pd.DataFrame:

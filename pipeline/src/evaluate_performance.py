@@ -1,7 +1,7 @@
 import logging
 from pathlib import Path
 import warnings
-from typing import Union
+from typing import Union, Dict
 import pandas as pd
 import sklearn.metrics
 import yaml
@@ -72,7 +72,7 @@ def calculate_classification(scores: pd.DataFrame, kwargs: dict) -> str:
             scores[kwargs["label"]])
 
 def evaluate_performance(scores: pd.DataFrame, kwargs: dict)\
-                                -> dict[str, Union[str, float]]:
+                                -> Dict[str, Union[str, float]]:
     """
     Summary: Checks model performance on test dataset using metrics
     Args:

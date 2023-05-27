@@ -1,4 +1,4 @@
-# Dockerfile-main
+# Dockerfile-tests
 FROM python:3.9-slim
 
 WORKDIR /app
@@ -8,6 +8,6 @@ RUN pip install -r requirements.txt
 
 COPY src/ ./src/
 COPY config/ ./config/
-COPY pipeline.py .
+COPY tests/ ./tests/
 
-CMD ["python", "pipeline.py"]
+CMD ["pytest"]
