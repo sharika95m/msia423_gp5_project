@@ -24,20 +24,16 @@ def define_folds(kwargs: Dict) -> KFold:
         folds = KFold(**kwargs)
         logger.info("The folds for cross-validation are created.")
     except KeyError as k_err:
-        logger.error("While making folds for cross-validation, \
-                    Key error has occured: %s", k_err)
+        logger.error("Key error occured while making folds for cross-validation: %s", k_err)
         sys.exit(1)
     except AttributeError as a_err:
-        logger.error("While making folds for cross-validation, \
-                    Attribute error has occured: %s", a_err)
+        logger.error("Attribute error occured while making folds for cross-validation: %s", a_err)
         sys.exit(1)
     except ValueError as v_err:
-        logger.error("While making folds for cross-validation, \
-                    Value error has occured: %s", v_err)
+        logger.error("Value error occured while making folds for cross-validation: %s", v_err)
         sys.exit(1)
-    except Exception as other:
-        logger.error("While making folds for cross-validation, \
-                    Other error has occured: %s", other)
+    except Exception as other_err:
+        logger.error("Other error occured while making folds for cross-validation: %s", other_err)
         sys.exit(1)
 
     return folds
@@ -54,20 +50,16 @@ def get_hyperparameters(kwargs: Dict) -> Union[Dict[str, list[int]], Dict[str, l
         rf_params = kwargs["RandomForest"]["hyperparameters"]
         logger.info("The hyperparameters are extracted from config.")
     except KeyError as k_err:
-        logger.error("While getting hyperparameters, \
-                    Key error has occured: %s", k_err)
+        logger.error("Key error occured while obtaining hyperparameters: %s", k_err)
         sys.exit(1)
     except AttributeError as a_err:
-        logger.error("While getting hyperparameters, \
-                    Attribute error has occured: %s", a_err)
+        logger.error("Attribute error occured while obtaining hyperparameters: %s", a_err)
         sys.exit(1)
     except ValueError as v_err:
-        logger.error("While getting hyperparameters, \
-                    Value error has occured: %s", v_err)
+        logger.error("Value error occured while obtaining hyperparameters: %s", v_err)
         sys.exit(1)
-    except Exception as other:
-        logger.error("While getting hyperparameters, \
-                    Other error has occured: %s", other)
+    except Exception as other_err:
+        logger.error("Other error occured while obtaining hyperparameters: %s", other_err)
         sys.exit(1)
 
     return dt_params, rf_params
