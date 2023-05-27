@@ -31,3 +31,4 @@ tzdata==2023.3
 urllib3==1.26.15
 xlrd==2.0.1
 fsspec==2023.5.0
+moto==4.1.10
