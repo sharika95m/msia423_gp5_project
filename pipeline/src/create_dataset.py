@@ -24,22 +24,3 @@ def get_dataset(file_path: Path) -> pd.DataFrame:
         logger.error("While opening dataset, other error has occured: %s", other)
         sys.exit(1)
     return df_raw
-    
-# def save_dataset(df: pd.DataFrame, save_path: Path) -> None:
-#     """Saves dataset to CSV file
-#     Args:
-#         url: Pandas Dataframe to be converted to csv
-#         save_path: Local path to write csv to
-#     """
-#     try:
-#         df.to_csv(save_path, index = False)
-#         logger.info("Dataset written to %s", save_path)
-#     except FileNotFoundError as fnfe:
-#         logger.error("File Not Found Error has occured: %s", fnfe)
-#         sys.exit(1)
-#     except IOError as io_err:
-#         logger.error("IO Error has occured: %s", io_err)
-#         sys.exit(1)
-#     except Exception as e:
-#         logger.error("Other Error has occurred: %s", e)
-#         sys.exit(1)

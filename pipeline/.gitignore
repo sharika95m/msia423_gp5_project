@@ -12,3 +12,4 @@ models/*
 *.cache
 kaggle.json
 doubts.docx
+runs/

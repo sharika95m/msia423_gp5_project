@@ -16,22 +16,27 @@ generate_features:
   remove_na:
     column_name: TotalCharges
   get_ohe:
-    column_names: ['gender', 'Partner', 'Dependents', 'PhoneService',
-                  'MultipleLines', 'InternetService', 'OnlineSecurity',
-                  'OnlineBackup', 'DeviceProtection', 'TechSupport',
-                  'StreamingTV', 'StreamingMovies', 'Contract',
-                  'PaperlessBilling', 'PaymentMethod', 'Churn']
+    column_names: ['gender', 'Partner', 'Dependents',     'PhoneService','MultipleLines','InternetService', 'OnlineSecurity','OnlineBackup','DeviceProtection', 'TechSupport','StreamingTV', 'StreamingMovies', 'Contract','PaperlessBilling','PaymentMethod','Churn']
     axis: 1
   drop_cols:
     column_name: customerID
     axis: 1
-  calculate_log_transform:
-    log_transform:
-      log_entropy: visible_entropy
-  calculate_entropy:
-    entropy_x_contrast:
-      col_a: visible_contrast
-      col_b: visible_entropy
+analysis:
+  unique_customers: customerID
+  imbalance_check: Churn
+  imbalance_check_categories: ['gender', 'SeniorCitizen','Partner', 'Dependents','PhoneService','MultipleLines','InternetService',
+             'OnlineSecurity','OnlineBackup','DeviceProtection','TechSupport','StreamingTV',
+             'StreamingMovies','Contract','PaperlessBilling','PaymentMethod','numAdminTickets','numTechTickets']
+  plot_names: ['plot_1','plot_2','plot_3']
+  plot_1:
+    x_feature: Churn
+    y_feature: tenure
+  plot_2:
+    x_feature: Churn
+    y_feature: MonthlyCharges
+  plot_3:
+    x_feature: Churn
+    y_feature: TotalCharges
 train_test_data:
   split_data:
     test_size: 0.3

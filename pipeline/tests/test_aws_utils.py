@@ -43,7 +43,7 @@ def test_get_s3_file_path(s3):
     s3.create_bucket(Bucket=config["bucket_name"])
     s3.put_object(Bucket=config["bucket_name"], Key=f"{config['dataset_folder_name']}/{config['dataset_file_name']}", Body=b'test')
     
-    assert get_s3_file_path(config) == Path(f"s3://{config['bucket_name']}/{config['dataset_folder_name']}/{config['dataset_file_name']}")
+    assert get_s3_file_path(config) == f"s3://{config['bucket_name']}/{config['dataset_folder_name']}/{config['dataset_file_name']}"
 
 def test_upload_artifacts(s3, tmp_path):
     config = {

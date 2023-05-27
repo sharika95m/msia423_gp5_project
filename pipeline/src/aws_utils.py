@@ -5,6 +5,7 @@ import warnings
 import logging
 import boto3
 import botocore
+from typing import List
 
 warnings.filterwarnings("ignore")
 logger = logging.getLogger(__name__)
@@ -64,7 +65,7 @@ def get_s3_file_path(config: dict) -> Path:
         logger.error(f"Unexpected error occurred: {err}")
         raise err from None
 
-def upload_artifacts(artifacts: Path, config: dict) -> list[str]:
+def upload_artifacts(artifacts: Path, config: dict) -> List[str]:
     """
     Summary: Upload all the artifacts in the specified directory to S3
     Args:
@@ -85,7 +86,7 @@ def upload_artifacts(artifacts: Path, config: dict) -> list[str]:
         if config["bucket_name"] in exisiting_buckets:
             for file_name in dir_files:
                 file_s3_name = (artifacts / file_name).as_posix()
-                if "figures" not in file_s3_name:
+                if "eda" not in file_s3_name:
                     s3_conn.upload_file(file_s3_name,
                                 config["bucket_name"], file_s3_name)
                 else:
