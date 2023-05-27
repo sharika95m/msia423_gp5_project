@@ -42,7 +42,7 @@ def define_folds(kwargs: Dict) -> KFold:
 
     return folds
 
-def get_hyperparameters(kwargs: Dict) -> Union[Dict[str, list[int]], Dict[str, list[int]], Dict[str, make_scorer]]:
+def get_hyperparameters(kwargs: Dict) -> Union[Dict[str, List[int]], Dict[str, List[int]], Dict[str, make_scorer]]:
     """
     Summary: Function to create folds for cross-validation
     Args:

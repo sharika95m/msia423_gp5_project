@@ -4,14 +4,14 @@ import warnings
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import OneHotEncoder
-from typing import Union
+from typing import Union, Dict
 from pathlib import Path
 import pickle
 
 warnings.filterwarnings("ignore")
 logger = logging.getLogger(__name__)
 
-def remove_na(df: pd.DataFrame, kwargs: dict[str, str]) -> pd.DataFrame:
+def remove_na(df: pd.DataFrame, kwargs: Dict[str, str]) -> pd.DataFrame:
     """
     Summary: Function to remove NAs
     Function will stop execution if there is an error
@@ -46,7 +46,7 @@ def remove_na(df: pd.DataFrame, kwargs: dict[str, str]) -> pd.DataFrame:
 
     return df_2
 
-def get_ohe(df: pd.DataFrame, kwargs: dict[str, str]) -> Union[pd.DataFrame, OneHotEncoder]:
+def get_ohe(df: pd.DataFrame, kwargs: Dict[str, str]) -> Union[pd.DataFrame, OneHotEncoder]:
     """
     Summary: Function to One Hot Encode all features 
     and return updated dataframe and OneHotEncoder object
@@ -79,7 +79,7 @@ def get_ohe(df: pd.DataFrame, kwargs: dict[str, str]) -> Union[pd.DataFrame, One
 
     return df, ohe
 
-def drop_cols(df: pd.DataFrame, kwargs: dict[str, str])\
+def drop_cols(df: pd.DataFrame, kwargs: Dict[str, str])\
                             -> pd.DataFrame:
     """
     Summary: Function to calculate log transform

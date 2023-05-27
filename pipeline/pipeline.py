@@ -59,7 +59,7 @@ if __name__ == "__main__":
     #df = cd.get_dataset(dataset_path)
 
     # Create structured dataset from raw data; save to disk    
-    dataset_path = Path("data/Telecom Churn Rate Dataset.xlsx")
+    # dataset_path = Path("data/Telecom Churn Rate Dataset.xlsx")
     df = cd.get_dataset(dataset_path2)
 
     # Enrich dataset and OneHotEncoder with features for model training; save to disk
