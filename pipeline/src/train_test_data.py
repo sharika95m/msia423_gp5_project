@@ -1,3 +1,6 @@
+"""
+Summary: Obtain train test data
+"""
 import sys
 import warnings
 import logging
@@ -110,7 +113,7 @@ def save_data(
     Summary: Saves train and test dataset to CSV file
     Function will stop executing if save_data fails
     since test dataset is needed further in pipeline.
-    
+
     Args:
         train_data, test_data: dataframe to be stored as csv
         save_path: Local path to write csv to

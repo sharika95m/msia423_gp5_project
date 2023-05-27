@@ -1,3 +1,6 @@
+"""
+Summary: Conduct cross validation
+"""
 import sys
 import warnings
 import logging
