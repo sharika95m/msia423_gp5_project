@@ -9,6 +9,7 @@ import yaml
 import src.create_dataset as cd
 import src.generate_features as gf
 import src.train_test_data as ttd
+import src.analysis as an
 import src.crossvalidation as cv
 import src.model_predict as mp
 import src.evaluate_performance as ep
@@ -50,27 +51,21 @@ if __name__ == "__main__":
     with (artifacts / "config.yaml").open("w") as f:
         yaml.dump(config, f)
 
-    # Acquire data from online repository and save to disk
-    # ad.acquire_data(run_config["data_source"], artifacts / "clouds.data")
-
-    #Create dataset from raw data found within s3
-    dataset_path2 = aws.get_s3_file_path(config["aws"])
-    print(dataset_path2)
-    #df = cd.get_dataset(dataset_path)
-
-    # Create structured dataset from raw data; save to disk    
-    dataset_path = Path("data/Telecom Churn Rate Dataset.xlsx")
-    df = cd.get_dataset(dataset_path2)
+    # Create dataset from raw data found within s3
+    # Create structured dataset from raw data; save to disk 
+    dataset_path = aws.get_s3_file_path(config["aws"])
+    df = cd.get_dataset(dataset_path)
 
     # Enrich dataset and OneHotEncoder with features for model training; save to disk
     df_modified, ohe = gf.generate_features(df, config["generate_features"])
     gf.save_dataset(df_modified, artifacts / "modified_data.csv")
     gf.save_ohe(ohe, artifacts / "ohe_obj.pkl")
 
-    # # Generate statistics and visualizations for summarizing the data; save to disk
-    # figures = artifacts / "figures"
-    # figures.mkdir()
-    # eda.save_figures(features, figures)
+    # Generate statistics and visualizations for summarizing the data; save to disk
+    figures = artifacts / "eda"
+    figures.mkdir()
+    an.eda(df_modified, figures, config["analysis"])
+    an.save_figures(df_modified, figures, config["analysis"])
 
     # Created train-test dataset and then upsample the train; save to disk
     train, test = ttd.train_test_data_divide(df_modified, config["train_test_data"])

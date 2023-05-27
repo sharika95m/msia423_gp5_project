@@ -4,14 +4,14 @@ import warnings
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import OneHotEncoder
-from typing import Union
+from typing import Union, Dict
 from pathlib import Path
 import pickle
 
 warnings.filterwarnings("ignore")
 logger = logging.getLogger(__name__)
 
-def remove_na(df: pd.DataFrame, kwargs: dict[str, str]) -> pd.DataFrame:
+def remove_na(df: pd.DataFrame, kwargs: Dict[str, str]) -> pd.DataFrame:
     """
     Summary: Function to remove NAs
     Function will stop execution if there is an error
@@ -46,7 +46,7 @@ def remove_na(df: pd.DataFrame, kwargs: dict[str, str]) -> pd.DataFrame:
 
     return df_2
 
-def get_ohe(df: pd.DataFrame, kwargs: dict[str, str]) -> Union[pd.DataFrame, OneHotEncoder]:
+def get_ohe(df: pd.DataFrame, kwargs: Dict[str, str]) -> Union[pd.DataFrame, OneHotEncoder]:
     """
     Summary: Function to One Hot Encode all features 
     and return updated dataframe and OneHotEncoder object
@@ -58,7 +58,6 @@ def get_ohe(df: pd.DataFrame, kwargs: dict[str, str]) -> Union[pd.DataFrame, One
         ohe = OneHotEncoder(sparse=False,categories="auto",drop="first")
         ohe.fit(df[kwargs["column_names"]])
         temp_df = pd.DataFrame(data=ohe.transform(df[kwargs["column_names"]]), columns=ohe.get_feature_names_out())
-        df.drop(columns=kwargs["column_names"], axis=1, inplace=True)
         df = pd.concat([df.reset_index(drop=True), temp_df], axis=kwargs["axis"])
     except KeyError as key_err:
         logger.error("While onehotencoding, \
@@ -79,7 +78,7 @@ def get_ohe(df: pd.DataFrame, kwargs: dict[str, str]) -> Union[pd.DataFrame, One
 
     return df, ohe
 
-def drop_cols(df: pd.DataFrame, kwargs: dict[str, str])\
+def drop_cols(df: pd.DataFrame, kwargs: Dict[str, str])\
                             -> pd.DataFrame:
     """
     Summary: Function to calculate log transform
@@ -102,7 +101,7 @@ def drop_cols(df: pd.DataFrame, kwargs: dict[str, str])\
 
     return df_2
 
-def generate_features(data: pd.DataFrame, kwargs: dict) -> pd.DataFrame:
+def generate_features(data: pd.DataFrame, kwargs: Dict[str, str]) -> pd.DataFrame:
     """
     Summary: Feature Engineering: Create new features
     from exisiting features
@@ -176,49 +175,3 @@ def save_ohe(ohe: OneHotEncoder, save_path: Path) -> None:
         logger.error("While writing OneHotEncoder, Other Error \
                     has occurred: %s", e)
         sys.exit(1)
-
-# import argparse
-# import datetime
-# import logging.config
-# import yaml
-# import create_dataset as cd
-
-# logging.config.fileConfig("config/logging/local.conf")
-# logger = logging.getLogger("clouds")
-
-# if __name__ == "__main__":
-#     parser = argparse.ArgumentParser(
-#         description="Acquire, clean, and create features from clouds data"
-#     )
-#     parser.add_argument(
-#         "--config", default="config/default-config.yaml", help="Path to configuration file"
-#     )
-#     args = parser.parse_args()
-
-#     # Load configuration file for parameters and run config
-#     with open(args.config, "r") as f:
-#         try:
-#             config = yaml.load(f, Loader=yaml.FullLoader)
-#         except yaml.error.YAMLError as e:
-#             logger.error("Error while loading configuration from %s", args.config)
-#             raise yaml.error.YAMLError from e
-#         else:
-#             logger.info("Configuration file loaded from %s", args.config)
-    
-#     run_config = config.get("run_config", {})
-
-#     # Set up output directory for saving artifacts
-#     now = int(datetime.datetime.now().timestamp())
-#     artifacts = Path(run_config.get("output", "runs")) / str(now)
-#     artifacts.mkdir(parents=True)
-
-#     run_config = config.get("run_config", {})
-
-#     dataset_path = Path("data/Telecom Churn Rate Dataset.xlsx")
-
-#     df = cd.get_dataset(dataset_path)
-    
-#     df_modified, ohe = generate_features(df, config["generate_features"])
-    
-#     save_dataset(df_modified, artifacts / "modified_data.csv")
-#     save_ohe(ohe, artifacts / "ohe_obj.pkl")
