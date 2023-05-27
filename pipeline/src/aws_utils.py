@@ -49,7 +49,8 @@ def get_s3_file_path(config: dict) -> Path:
             else:
                 raise
 
-        path_to_file = Path(f"s3://{config['bucket_name']}/{config['dataset_folder_name']}/{config['dataset_file_name']}")
+        path_to_file = f"s3://{config['bucket_name']}/{config['dataset_folder_name']}/{config['dataset_file_name']}"
+
         logger.info(f"Successfully created Path object to file {config['dataset_file_name']} in bucket {config['bucket_name']}")
         return path_to_file
 

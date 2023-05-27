@@ -13,8 +13,11 @@ import src.crossvalidation as cv
 import src.model_predict as mp
 import src.evaluate_performance as ep
 import src.aws_utils as aws
+from os import path
 
-logging.config.fileConfig("config/logging/local.conf")
+log_conf_path = path.join(path.dirname(path.abspath(__file__)), 'config/logging/local.conf')
+config_path = path.join(path.dirname(path.abspath(__file__)), 'config/default-config.yaml')
+logging.config.fileConfig(log_conf_path, disable_existing_loggers=True)
 logger = logging.getLogger("clouds")
 
 if __name__ == "__main__":
@@ -22,7 +25,7 @@ if __name__ == "__main__":
         description="Acquire, clean, and create features from clouds data"
     )
     parser.add_argument(
-        "--config", default="config/default-config.yaml", help="Path to configuration file"
+        "--config", default=config_path, help="Path to configuration file"
     )
     args = parser.parse_args()
 
@@ -57,7 +60,7 @@ if __name__ == "__main__":
 
     # Create structured dataset from raw data; save to disk    
     dataset_path = Path("data/Telecom Churn Rate Dataset.xlsx")
-    df = cd.get_dataset(dataset_path)
+    df = cd.get_dataset(dataset_path2)
 
     # Enrich dataset and OneHotEncoder with features for model training; save to disk
     df_modified, ohe = gf.generate_features(df, config["generate_features"])
