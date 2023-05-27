@@ -1,0 +1,9 @@
+aws:
+  upload: True
+  bucket_name: msia423-gp5-project
+  region_name: us-east-2
+  dataset_folder_name: telecom_kaggle_dataset
+  dataset_file_name: Telecom Churn Rate Dataset.xlsx
+  output_file_name: data_with_predictions.csv
+  output_folder_name: runs/1685206847
+

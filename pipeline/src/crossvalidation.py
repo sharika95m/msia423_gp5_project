@@ -54,7 +54,6 @@ def define_folds(kwargs: Dict) -> KFold:
                     Other error has occured: %s",
             other,
         )
-
         sys.exit(1)
 
     return folds
@@ -100,7 +99,6 @@ def get_hyperparameters(
                     Other error has occured: %s",
             other,
         )
-    
         sys.exit(1)
 
     return dt_params, rf_params
@@ -230,10 +228,10 @@ def train_model_dt(
         model.fit(train_x, train_y)
         logger.info("Final Model has been trained.")
     except KeyError as key_err:
-        logger.error("While training final model, a KeyError has occured: %s", key_err)
+        logger.error("KeyError has occured while training final model: %s", key_err)
         sys.exit(1)
     except Exception as other:
-        logger.error("While training final model, an Exception has occured: %s", other)
+        logger.error("Exception has occured while training final model: %s", other)
         sys.exit(1)
     return model
 
@@ -256,10 +254,10 @@ def train_model_rf(
         model.fit(train_x, train_y)
         logger.info("Final Model has been trained.")
     except KeyError as key_err:
-        logger.error("While training final model, a KeyError has occured: %s", key_err)
+        logger.error("KeyError has occured while training final model: %s", key_err)
         sys.exit(1)
     except Exception as other:
-        logger.error("While training final model, an Exception has occured: %s", other)
+        logger.error("Exception has occured while training final model: %s", other)
         sys.exit(1)
     return model
 
