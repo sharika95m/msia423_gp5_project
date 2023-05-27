@@ -54,6 +54,7 @@ def define_folds(kwargs: Dict) -> KFold:
                     Other error has occured: %s",
             other,
         )
+
         sys.exit(1)
 
     return folds
@@ -99,6 +100,7 @@ def get_hyperparameters(
                     Other error has occured: %s",
             other,
         )
+    
         sys.exit(1)
 
     return dt_params, rf_params

@@ -86,7 +86,7 @@ def upload_artifacts(artifacts: Path, config: dict) -> List[str]:
         if config["bucket_name"] in exisiting_buckets:
             for file_name in dir_files:
                 file_s3_name = (artifacts / file_name).as_posix()
-                if "figures" not in file_s3_name:
+                if "eda" not in file_s3_name:
                     s3_conn.upload_file(file_s3_name,
                                 config["bucket_name"], file_s3_name)
                 else:
