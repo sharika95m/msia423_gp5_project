@@ -28,12 +28,16 @@ def train_test_data_divide(data: pd.DataFrame, kwargs: dict) -> \
 
         logger.info("Train-test datasets have been created.")
     except ValueError as v_err:
-        logger.error("During train-test split, \
-                    Value error has occured: %s", v_err)
+        logger.error("Value error occured during train-test split: %s", v_err)
         sys.exit(1)
-    except Exception as other:
-        logger.error("During train-test split, \
-                    Other error has occured: %s", other)
+    except KeyError as k_err:
+        logger.error("Key error occured during train-test split: %s", k_err)
+        sys.exit(1)
+    except TypeError as t_err:
+        logger.error("Type error occured during train-test split: %s", t_err)
+        sys.exit(1)
+    except Exception as other_err:
+        logger.error("Rrror occured during train-test split: %s", other_err)
         sys.exit(1)
 
     return train, test
@@ -43,23 +47,41 @@ def upsample_train(train: pd.DataFrame, kwargs: dict) -> pd.DataFrame:
     Summary: Upsample training data
     Function will stop executing if upsampling fails.
 
-    Need to write exception statements
     Args:
         train_data: dataframe to be upsampled
         save_path: Local path to write csv to
     """
-    train_minority = train[train['Churn_Yes'] == 1]
-    train_other = train[train['Churn_Yes'] == 0]
+    try:
+        train_minority = train[train['Churn_Yes'] == 1]
+        train_other = train[train['Churn_Yes'] == 0]
 
-    min_upsampled = resample(train_minority, 
-                    random_state = kwargs["upsample_train"]["random_state"],
-                    n_samples = len(train_other) - len(train_minority),
-                    replace=True)
-    train_upsampled = pd.concat([min_upsampled,train],
-                    axis = kwargs["upsample_train"]["axis"],
-                    ignore_index=kwargs["upsample_train"]["ignore_index"],
-                    sort=kwargs["upsample_train"]["sort"])
-    logger.info("The train dataset has been upsampled to maintain class balance.")
+        if(train_minority.shape[0]==0):
+            logger.warning('Minority Class, i.e churn cases not present in data')
+            return train
+
+        min_upsampled = resample(train_minority, 
+                        random_state = kwargs["upsample_train"]["random_state"],
+                        n_samples = len(train_other) - len(train_minority),
+                        replace=True)
+        train_upsampled = pd.concat([min_upsampled,train],
+                        axis = kwargs["upsample_train"]["axis"],
+                        ignore_index=kwargs["upsample_train"]["ignore_index"],
+                        sort=kwargs["upsample_train"]["sort"])
+        logger.info("The train dataset has been upsampled to maintain class balance.")
+
+    except ValueError as v_err:
+        logger.error("Value error occured during Upsampling: %s , Returning original dataset", v_err)
+        return train
+    except KeyError as k_err:
+        logger.error("Key error occured during Upsampling: %s, Returning original dataset", k_err)
+        return train    
+    except TypeError as t_err:
+        logger.error("Type error occured during Upsampling: %s, Returning original dataset", t_err)
+        return train       
+    except Exception as other_err:
+        logger.error("Rrror occured during Upsampling: %s, Returning original dataset", other_err)
+        return train
+
     
     return train_upsampled
 
@@ -80,14 +102,14 @@ def save_data(train_data: pd.DataFrame, test_data:
         logger.info("Train, test, upsampled train Datasets \
                     are written to %s", save_path)
     except FileNotFoundError as fnfe:
-        logger.error("While saving train/test dataset, \
-                    File Not Found Error has occured: %s", fnfe)
+        logger.error("File Not Found Error has occured, \
+                    While saving train/test dataset: %s", fnfe)
         sys.exit(1)
     except IOError as io_err:
-        logger.error("While saving train/test dataset, \
-                    IO Error has occured: %s", io_err)
+        logger.error("IO Error has occured, \
+                    While saving train/test dataset: %s", io_err)
         sys.exit(1)
-    except Exception as other:
-        logger.error("While saving train/test dataset, \
-                    Other Error has occured: %s", other)
+    except Exception as other_err:
+        logger.error("Other Error has occured, \
+                    While saving train/test dataset: %s", other_err)
         sys.exit(1)

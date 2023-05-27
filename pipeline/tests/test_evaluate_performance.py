@@ -156,7 +156,7 @@ def test_invalid_metric():
     with pytest.raises(KeyError):
         ep.evaluate_performance(scores,kwargs)
 
-
+## Test Case 6: Model scored correctly
 def test_correct_log(caplog):
     scores = pd.DataFrame({
     "truth": [0, 1, 0, 1, 0],
