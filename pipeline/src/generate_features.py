@@ -78,7 +78,6 @@ def get_ohe(data: pd.DataFrame, kwargs: Dict[str, str]) -> Union[pd.DataFrame, O
         logger.error("While onehotencoding, \
                     Other error occurred: %s", other)
         raise Exception from other
-
     return data, ohe
 
 def drop_cols(data: pd.DataFrame, kwargs: Dict[str, str])\
