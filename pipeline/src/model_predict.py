@@ -1,18 +1,22 @@
+"""
+Module contains functionalities to make predictions and store them
+"""
+
 import sys
 import logging
 from pathlib import Path
 import warnings
-import pandas as pd
 from typing import Union, Tuple
-import pickle
+import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
 
 warnings.filterwarnings("ignore")
 logger = logging.getLogger(__name__)
 
-def model_predict(test_data: pd.DataFrame, model: Union[RandomForestClassifier, DecisionTreeClassifier],
-                kwargs) -> Tuple[pd.DataFrame, pd.DataFrame]:
+def model_predict(test_data: pd.DataFrame,
+                  model: Union[RandomForestClassifier, DecisionTreeClassifier],
+                  kwargs) -> Tuple[pd.DataFrame, pd.DataFrame]:
     """
     Summary: Checks score (prediction probabilities and
     labels) from model on test dataset.

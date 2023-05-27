@@ -33,7 +33,7 @@ def define_folds(kwargs: Dict) -> KFold:
         logger.error("Value error occured while making folds for cross-validation: %s", v_err)
         sys.exit(1)
     except Exception as other_err:
-        logger.error("Other error occured while making folds for cross-validation: %s", other_err)
+        logger.error("Exception occured while making folds for cross-validation: %s", other_err)
         sys.exit(1)
 
     return folds
@@ -59,7 +59,7 @@ def get_hyperparameters(kwargs: Dict) -> Union[Dict[str, list[int]], Dict[str, l
         logger.error("Value error occured while obtaining hyperparameters: %s", v_err)
         sys.exit(1)
     except Exception as other_err:
-        logger.error("Other error occured while obtaining hyperparameters: %s", other_err)
+        logger.error("Exception occured while obtaining hyperparameters: %s", other_err)
         sys.exit(1)
 
     return dt_params, rf_params
@@ -82,20 +82,16 @@ def gridsearchcv_dt(dt_params: Dict, kwargs: Dict, folds: KFold, train: pd.DataF
         results = search.fit(train_X, train_y)
         logger.info("GridSearchCV completed for DecisionTreeClassifier.")
     except KeyError as k_err:
-        logger.error("While doing gridsearchcv for decision tree, \
-                    Key error has occured: %s", k_err)
+        logger.error("Key error has occured while doing gridsearchcv for decision tree: %s", k_err)
         sys.exit(1)
     except AttributeError as a_err:
-        logger.error("While doing gridsearchcv for decision tree, \
-                    Attribute error has occured: %s", a_err)
+        logger.error("Attribute error has occured while doing gridsearchcv for decision tree: %s", a_err)
         sys.exit(1)
     except ValueError as v_err:
-        logger.error("While doing gridsearchcv for decision tree, \
-                    Value error has occured: %s", v_err)
+        logger.error("Value error has occured while doing gridsearchcv for decision tree: %s", v_err)
         sys.exit(1)
-    except Exception as other:
-        logger.error("While doing gridsearchcv for decision tree, \
-                    Other error has occured: %s", other)
+    except Exception as other_err:
+        logger.error("Exception has occured while doing gridsearchcv for decision tree: %s", other_err)
         sys.exit(1)
 
     return results
@@ -118,20 +114,16 @@ def gridsearchcv_rf(rf_params: Dict, kwargs: Dict, folds: KFold, train: pd.DataF
         results = search.fit(train_X, train_y)
         logger.info("GridSearchCV completed for RandomForestClassifier.")
     except KeyError as k_err:
-        logger.error("While doing gridsearchcv for random forest, \
-                    Key error has occured: %s", k_err)
+        logger.error("Key error has occured while doing gridsearchcv for random forest: %s", k_err)
         sys.exit(1)
     except AttributeError as a_err:
-        logger.error("While doing gridsearchcv for random forest, \
-                    Attribute error has occured: %s", a_err)
+        logger.error("Attribute error has occured while doing gridsearchcv for random forest: %s", a_err)
         sys.exit(1)
     except ValueError as v_err:
-        logger.error("While doing gridsearchcv for random forest, \
-                    Value error has occured: %s", v_err)
+        logger.error("Value error has occured while doing gridsearchcv for random forest: %s", v_err)
         sys.exit(1)
-    except Exception as other:
-        logger.error("While doing gridsearchcv for random forest, \
-                    Other error has occured: %s", other)
+    except Exception as other_err:
+        logger.error("Exception has occured while doing gridsearchcv for random forest: %s", other_err)
         sys.exit(1)
 
     return results
@@ -152,10 +144,10 @@ def train_model_dt(hyperparameters: Dict[str, int], train: pd.DataFrame, kwargs:
         model.fit(train_X, train_y)
         logger.info("Final Model has been trained.")
     except KeyError as key_err:
-        logger.error("While training final model, a KeyError has occured: %s", key_err)
+        logger.error("KeyError has occured while training final model: %s", key_err)
         sys.exit(1)
     except Exception as other:
-        logger.error("While training final model, an Exception has occured: %s", other)
+        logger.error("Exception has occured while training final model: %s", other)
         sys.exit(1)
     return model
 
@@ -175,10 +167,10 @@ def train_model_rf(hyperparameters: Dict[str, int], train: pd.DataFrame, kwargs:
         model.fit(train_X, train_y)
         logger.info("Final Model has been trained.")
     except KeyError as key_err:
-        logger.error("While training final model, a KeyError has occured: %s", key_err)
+        logger.error("KeyError has occured while training final model: %s", key_err)
         sys.exit(1)
     except Exception as other:
-        logger.error("While training final model, an Exception has occured: %s", other)
+        logger.error("Exception has occured while training final model: %s", other)
         sys.exit(1)
     return model
 
@@ -195,14 +187,11 @@ def save_model(model: Union[RandomForestClassifier, DecisionTreeClassifier], sav
         pickle.dump(model, save_path.open("wb"))
         logger.info("Final Model written to %s", save_path)
     except FileNotFoundError as fnfe:
-        logger.error("While saving model, \
-                    File Not Found Error has occured: %s", fnfe)
+        logger.error("File Not Found Error has occured while saving model: %s", fnfe)
         sys.exit(1)
     except IOError as io_err:
-        logger.error("While saving model, \
-                    IO Error has occured: %s", io_err)
+        logger.error("IO Error has occured while saving model: %s", io_err)
         sys.exit(1)
     except Exception as other:
-        logger.error("While saving model, \
-                    Other Error has occured: %s", other)
+        logger.error("Exception has occured while saving model: %s", other)
         sys.exit(1)
