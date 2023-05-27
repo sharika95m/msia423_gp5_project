@@ -39,12 +39,13 @@ if __name__ == "__main__":
 
     aws_config = config['aws']
 
-
     bucket_name = aws_config.get('bucket_name','check')
     test_file = aws_config.get('output_file_name','check')
     test_location = aws_config.get('output_folder_name','check') + '/' + test_file
 
+    st.set_page_config(page_title='Retention Wizard', page_icon='🧙‍♂️')
 
+    st.header('Retention Wizard')
     container_1 = st.container()
     col1,col2 = container_1.columns(2)
     col3,col4 = st.columns(2)
@@ -52,12 +53,9 @@ if __name__ == "__main__":
     with col1:
         cust_id = st.text_input("Enter Customer ID") ## textbox
 
+    container_1.text('')
+
     ## Place holders
-    col3.write("Customer ID") 
-    col3.write("Gender")
-    col3.write("Internet Service")
-    col3.write("Contract")
-    col3.write("Payment Method")
 
     @st.cache_data(show_spinner=False)
     def get_data_from_s3(bucket_name,test_file):
@@ -67,13 +65,19 @@ if __name__ == "__main__":
         data = obj['Body'].read()
         df_back = pd.read_csv(io.BytesIO(data))
         return df_back
+    
+    @st.cache_data(show_spinner=False)
+    def get_data_locally():
+        df_back = pd.read_csv('/Users/kiranjyothisheena/Downloads/data_with_predictions.csv')
+        return df_back
 
     if cust_id:
 
         ## Accessing the file in S3
         try:
             with st.spinner('Extracting the data from database'):
-                df_back = get_data_from_s3(bucket_name,test_location)
+                #df_back = get_data_from_s3(bucket_name,test_location)
+                df_back = get_data_locally()
         except Exception as e:
             logger.error('Could not download artifacts from aws. Aborting')
             st.error('Error in loading data: Aborting', icon="🚨")
@@ -94,11 +98,30 @@ if __name__ == "__main__":
             check_pred = (check_pred) * 100
             check_pred = f'{check_pred:.2f}' + '%'
 
+            col3.write("Customer ID") 
+            col3.write("Gender")
+            col3.write("Phone Service")
+            col3.write("Internet Service")
+            col3.write("Contract")
+            col3.write("Tenure")
+            col3.write("Monthly Charges")
+            col3.write("Total Charges")
+
             col2.metric(label="Churn Probability", value= check_pred)
+
+            # metric_container = col2.empty()
+            # with metric_container:
+            #     st.write('Churn Probability')
+            #     color = 'red'
+            #     st.markdown(f'<h1 style="color:{color}">{check_pred}</h1>', unsafe_allow_html=True)
+
             col4.write(cust_id)
             col4.write(df_select['gender'].values[0])
+            col4.write(df_select['PhoneService'].values[0])
             col4.write(df_select['InternetService'].values[0])
             col4.write(df_select['Contract'].values[0])
-            col4.write(df_select['PaymentMethod'].values[0])
+            col4.write(str(df_select['tenure'].values[0]))
+            col4.write(str(df_select['MonthlyCharges'].values[0]))
+            col4.write(str(df_select['TotalCharges'].values[0]))
             logger.info('Deatils of Customer ID %s is retrieved.',cust_id)
 
