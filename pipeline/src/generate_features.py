@@ -1,32 +1,33 @@
+"""Module to generate features needed for model training"""
 import sys
 import logging
 import warnings
+from pathlib import Path
+from typing import Dict, Union
+import pickle
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import OneHotEncoder
-from typing import Union, Dict
-from pathlib import Path
-import pickle
 
 warnings.filterwarnings("ignore")
 logger = logging.getLogger(__name__)
 
-def remove_na(df: pd.DataFrame, kwargs: Dict[str, str]) -> pd.DataFrame:
+def remove_na(data: pd.DataFrame, kwargs: Dict[str, str]) -> pd.DataFrame:
     """
     Summary: Function to remove NAs
     Function will stop execution if there is an error
     since this is an important variable in modelling.
     Args:
-        df: Pandas Dataframe with exisiting features
+        data: Pandas Dataframe with exisiting features
         kwargs: Dictionary storing feature names for computation
     """
     try:
-        df_2 = df.copy()
+        data_2 = data.copy()
         #Replace empty strings with NA
-        df_2[kwargs["column_name"]] = df_2[kwargs["column_name"]].replace(' ',np.nan)
+        data_2[kwargs["column_name"]] = data_2[kwargs["column_name"]].replace(' ',np.nan)
 
         #Drop all NA values
-        df_2 = df_2.dropna(how='any').reset_index(drop=True)
+        data_2 = data_2.dropna(how='any').reset_index(drop=True)
     except KeyError as key_err:
         logger.error("While removing NA, \
                     Key error occurred: %s", key_err)
@@ -44,21 +45,23 @@ def remove_na(df: pd.DataFrame, kwargs: Dict[str, str]) -> pd.DataFrame:
                     Other error occurred: %s", other)
         sys.exit(1)
 
-    return df_2
+    return data_2
 
-def get_ohe(df: pd.DataFrame, kwargs: Dict[str, str]) -> Union[pd.DataFrame, OneHotEncoder]:
+def get_ohe(data: pd.DataFrame, kwargs: Dict[str, str]) -> Union[pd.DataFrame, OneHotEncoder]:
     """
-    Summary: Function to One Hot Encode all features 
+    Summary: Function to One Hot Encode all features
     and return updated dataframe and OneHotEncoder object
     Args:
-        df: Pandas Dataframe with exisiting features
+        data: Pandas Dataframe with exisiting features
         kwargs: Dictionary storing feature names for one hot encoding
     """
     try:
         ohe = OneHotEncoder(sparse=False,categories="auto",drop="first")
-        ohe.fit(df[kwargs["column_names"]])
-        temp_df = pd.DataFrame(data=ohe.transform(df[kwargs["column_names"]]), columns=ohe.get_feature_names_out())
-        df = pd.concat([df.reset_index(drop=True), temp_df], axis=kwargs["axis"])
+        ohe.fit(data[kwargs["column_names"]])
+        temp_data = pd.DataFrame(data=ohe.transform\
+            (data[kwargs["column_names"]]), \
+            columns=ohe.get_feature_names_out())
+        data = pd.concat([data.reset_index(drop=True), temp_data], axis=kwargs["axis"])
     except KeyError as key_err:
         logger.error("While onehotencoding, \
                     Key error occurred: %s", key_err)
@@ -76,20 +79,20 @@ def get_ohe(df: pd.DataFrame, kwargs: Dict[str, str]) -> Union[pd.DataFrame, One
                     Other error occurred: %s", other)
         raise Exception from other
 
-    return df, ohe
+    return data, ohe
 
-def drop_cols(df: pd.DataFrame, kwargs: Dict[str, str])\
+def drop_cols(data: pd.DataFrame, kwargs: Dict[str, str])\
                             -> pd.DataFrame:
     """
     Summary: Function to calculate log transform
     Function will stop execution if there is an error
     since this is an important variable in modelling.
     Args:
-        df: Pandas Dataframe with exisiting features
+        data: Pandas Dataframe with exisiting features
         kwargs: Dictionary storing feature names for computation
     """
     try:
-        df_2 = df.drop(columns = kwargs["column_name"], axis = int(kwargs["axis"]))
+        data_2 = data.drop(columns = kwargs["column_name"], axis = int(kwargs["axis"]))
     except KeyError as key_err:
         logger.error("While dropping unnecessary columns, \
                     Key error occurred: %s", key_err)
@@ -99,7 +102,7 @@ def drop_cols(df: pd.DataFrame, kwargs: Dict[str, str])\
                     Other error occurred: %s", other)
         sys.exit(1)
 
-    return df_2
+    return data_2
 
 def generate_features(data: pd.DataFrame, kwargs: Dict[str, str]) -> pd.DataFrame:
     """
@@ -147,11 +150,11 @@ def save_dataset(data: pd.DataFrame, save_path: Path) -> None:
         logger.error("While writing modified dataset, IO Error \
                     has occured: %s", io_err)
         sys.exit(1)
-    except Exception as e:
+    except Exception as other:
         logger.error("While writing modified dataset, Other \
-                    Error has occurred: %s", e)
+                    Error has occurred: %s", other)
         sys.exit(1)
-    
+
 def save_ohe(ohe: OneHotEncoder, save_path: Path) -> None:
     """
     Summary: Save one hote encoder object to directory
@@ -171,7 +174,7 @@ def save_ohe(ohe: OneHotEncoder, save_path: Path) -> None:
         logger.error("While writing OneHotEncoder, IO Error \
                     has occured: %s", io_err)
         sys.exit(1)
-    except Exception as e:
+    except Exception as other:
         logger.error("While writing OneHotEncoder, Other Error \
-                    has occurred: %s", e)
+                    has occurred: %s", other)
         sys.exit(1)

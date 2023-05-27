@@ -1,9 +1,9 @@
+"""Analysis.py module is too perform basic EDA"""
 import warnings
 import logging
 from pathlib import Path
 from typing import Dict
 import seaborn as sns
-import matplotlib.pyplot as plt
 import pandas as pd
 
 warnings.filterwarnings("ignore")
@@ -21,8 +21,8 @@ def eda(data: pd.DataFrame, dir: Path, config: Dict[str, str]) -> None:
     """
     try:
         file = open(dir / 'basic_eda.txt', 'w')
-        n = len(data[config["unique_customers"]].unique())
-        file.write(f"The number of unique customers in database: {n}")
+        n_unique = len(data[config["unique_customers"]].unique())
+        file.write(f"The number of unique customers in database: {n_unique}")
         file.write("\n")
         logger.info('Identified number of unique customers')
 
@@ -68,7 +68,9 @@ def save_figures(dataset: pd.DataFrame, dir: Path, config: Dict[str, str]) -> No
     plot_names = config["plot_names"]
     try:
         for plot_name in plot_names:
-            plot_sns = sns.boxplot(data=dataset, x=config[plot_name]["x_feature"], y=config[plot_name]["y_feature"])
+            plot_sns = sns.boxplot(data=dataset, \
+                x=config[plot_name]["x_feature"], \
+                y=config[plot_name]["y_feature"])
             fig = plot_sns.get_figure()
             fig.savefig(dir / plot_name)
         logger.info("All Plots are saved in directory: %s", dir)
