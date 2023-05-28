@@ -20,6 +20,31 @@ config_path = path.join(path.dirname(path.abspath(__file__)), 'config/app-config
 logging.config.fileConfig(log_conf_path, disable_existing_loggers=True)
 logger = logging.getLogger("app")
 
+def return_incentives(pred) -> str:
+
+    if(pred > 80):
+        ret_string = """
+            <div>
+            a) Bundle customers seem to have high churn. Offer a single service with discounts or upgraded plan. <br>
+            b) Fiber Optic customers are unsatisifed. Offer DSL with low rates.<br>
+            c) Offer long-term renewal subscription with a guaranteed price per month. <br>
+            d) Provide personal consultation to address issues for high values customers.
+            </div>
+        """
+    elif(pred > 50):
+        ret_string = """
+        <div>
+        a) Receive messaging and retention campaigns that increase engagement. <br>
+        b) Offer a family plan to reduce costs.  
+        </div>
+        """
+    else:
+        ret_string = """
+        a) Offer Premium service or additional services to increase revenue.
+        """
+
+    return ret_string
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Acquire, clean, and create features from clouds data"
@@ -73,9 +98,11 @@ if __name__ == "__main__":
     add_bg_from_local('resources/background.jpeg')
 
     st.header('Retention Wizard')
-    container_1 = st.container()
+
+    main_col1,main_col2 = st.columns(2)
+    container_1 = main_col1.container()
     col1,col2 = container_1.columns(2)
-    col3,col4 = st.columns(2)
+    col3,col4 = main_col1.columns(2)
 
     with col1:
         CUST_ID = st.text_input("Enter Customer ID") ## textbox
@@ -123,7 +150,7 @@ if __name__ == "__main__":
         else:
             check_pred = df_select['pred_probability'].values[0]
             check_pred = (check_pred) * 100
-            check_pred = f'{check_pred:.2f}' + '%'
+            check_pred_str = f'{check_pred:.2f}' + '%'
 
             col3.write("Customer ID")
             col3.write("Gender")
@@ -134,7 +161,7 @@ if __name__ == "__main__":
             col3.write("Monthly Charges")
             col3.write("Total Charges")
 
-            col2.metric(label="Churn Probability", value= check_pred)
+            col2.metric(label="Churn Probability", value= check_pred_str)
             col4.write(CUST_ID)
             col4.write(df_select['gender'].values[0])
             col4.write(df_select['PhoneService'].values[0])
@@ -144,3 +171,10 @@ if __name__ == "__main__":
             col4.write(str(df_select['MonthlyCharges'].values[0]))
             col4.write(str(df_select['TotalCharges'].values[0]))
             logger.info('Details of Customer ID %s is retrieved.',CUST_ID)
+
+            recommendation_str = return_incentives(check_pred)
+            main_col2.subheader("Recommendations")
+            main_col2.markdown(recommendation_str,unsafe_allow_html=True)
+
+
+
