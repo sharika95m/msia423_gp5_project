@@ -1,9 +1,16 @@
+"""
+create_dataset.py
+
+This module provides functions for creating and saving datasets from files.
+
+Author: Team5
+"""
+
 import logging
 from pathlib import Path
 import sys
 import warnings
 import xlrd
-import numpy as np
 import pandas as pd
 
 warnings.filterwarnings("ignore")
