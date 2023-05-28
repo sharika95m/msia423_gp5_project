@@ -1,6 +1,6 @@
 # Use the official Python image as the base image and ensure that we target x86_64 architectures
 #--platform=linux/x86_64 
-FROM python:3.10-slim
+FROM --platform=linux/x86_64 python:3.10-slim
 
 # Set the working directory inside the container
 WORKDIR /app
